@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: acctadmin-deploy
+#  namespace: geode-ap136976-dev-aks
+spec:
+  selector:
+    matchLabels:
+      app: acctadmin
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: acctadmin
+    spec:
+#      {{- with .Values.imagePullSecrets }}
+#      imagePullSecrets:
+#        {{- toYaml . | nindent 8 }}
+#      {{- end }}
+      containers:
+      - name: acctadmin
+        image: {{ .Values.image.repository }}
+  # Add the ConfigMap as a volume to the Pod
+        volumeMounts:
+        - name: acctadmin-config
+          mountPath: /opt/
+      volumes:
+        - name: acctadmin-config
+          configMap:
+            name: acctadmin-cm
